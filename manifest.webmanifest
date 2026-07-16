@@ -1,0 +1,16 @@
+{
+  "name": "Registro de Possíveis",
+  "short_name": "Registro",
+  "description": "Um teste leve e psicométrico pra ajudar mulheres a lerem os sinais antes de se envolverem.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf1f6",
+  "theme_color": "#b5477f",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
