@@ -1,13 +1,13 @@
 {
-  "name": "Registro de Possíveis",
-  "short_name": "Registro",
-  "description": "Um teste leve e psicométrico pra ajudar mulheres a lerem os sinais antes de se envolverem.",
+  "name": "Inventário ATHENA",
+  "short_name": "ATHENA",
+  "description": "Reconheça o padrão que você repete no amor. Instrumento de autoconhecimento do método ATHENA PRIME.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#fdf1f6",
-  "theme_color": "#b5477f",
+  "background_color": "#14131f",
+  "theme_color": "#14131f",
   "lang": "pt-BR",
   "icons": [
     { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },

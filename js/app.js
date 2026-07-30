@@ -1,254 +1,285 @@
 /* =============================================================================
- *  Registro de Possíveis — Lógica do app (navegação, questionário, salvar)
- *  Depende de js/model.js (window.MODELO).
+ *  INVENTÁRIO ATHENA — lógica do app
+ *  Depende de js/inventario.js (window.INVENTARIO).
  * ========================================================================== */
 
 (function () {
-  const { DIMENSOES, ESCALA, FRASES, calcular } = window.MODELO;
-  const CHAVE_STORAGE = "registro-possiveis-fichas-v1";
+  const { ARQUETIPOS, ORDEM, CENARIOS, FRAMING, calcular, rotuloCombinacao } = window.INVENTARIO;
+  const CHAVE = "inventario-athena-v1";
 
-  // Estado da avaliação em andamento.
-  let respostasAtuais = {};
-  let fichaEditandoId = null;
+  // Estado do teste em andamento.
+  let respostas = {};
+  let indice = 0;
+  let etapa = "mais"; // "mais" -> escolhe a mais parecida; "menos" -> a menos parecida
 
-  /* ---------- Persistência (salva só no aparelho, via localStorage) ---------- */
-  function carregarFichas() {
-    try { return JSON.parse(localStorage.getItem(CHAVE_STORAGE)) || []; }
-    catch (e) { return []; }
-  }
-  function salvarFichas(fichas) {
-    localStorage.setItem(CHAVE_STORAGE, JSON.stringify(fichas));
-  }
-
-  /* ---------- Navegação entre telas ---------- */
-  function irPara(idTela) {
+  /* ---------- Navegação ---------- */
+  function irPara(id) {
     document.querySelectorAll(".tela").forEach((t) => t.classList.remove("ativa"));
-    document.getElementById(idTela).classList.add("ativa");
+    document.getElementById(id).classList.add("ativa");
     window.scrollTo(0, 0);
   }
 
-  /* ---------- Tela inicial: lista de fichas ---------- */
-  function renderInicio() {
-    const fichas = carregarFichas().sort((a, b) => b.criadoEm - a.criadoEm);
-    const lista = document.getElementById("lista-fichas");
-    const vazio = document.getElementById("vazio");
-    lista.innerHTML = "";
-
-    vazio.classList.toggle("escondido", fichas.length > 0);
-
-    fichas.forEach((ficha) => {
-      const r = ficha.resultado;
-      const el = document.createElement("div");
-      el.className = "ficha";
-      el.innerHTML = `
-        <div class="ficha-medalha" style="background:${r.arquetipo.cor}">${r.arquetipo.emoji}</div>
-        <div class="ficha-info">
-          <div class="ficha-nome">${escapar(ficha.nome || "Sem nome")}</div>
-          <div class="ficha-arq">${r.arquetipo.nome}</div>
-        </div>
-        <div class="ficha-nota" style="color:${r.faixa.cor}">${r.geral}</div>
-        <button class="ficha-apagar" title="Apagar" aria-label="Apagar">🗑️</button>
-      `;
-      el.addEventListener("click", (ev) => {
-        if (ev.target.classList.contains("ficha-apagar")) return;
-        mostrarResultado(ficha.resultado, ficha.nome);
-      });
-      el.querySelector(".ficha-apagar").addEventListener("click", (ev) => {
-        ev.stopPropagation();
-        if (confirm(`Apagar a ficha "${ficha.nome || "Sem nome"}"?`)) {
-          salvarFichas(carregarFichas().filter((f) => f.id !== ficha.id));
-          renderInicio();
-        }
-      });
-      lista.appendChild(el);
-    });
+  /* ---------- Persistência (só no aparelho) ---------- */
+  function carregar() {
+    try { return JSON.parse(localStorage.getItem(CHAVE)); } catch (e) { return null; }
+  }
+  function salvar(resultado) {
+    localStorage.setItem(CHAVE, JSON.stringify({ resultado, respostas, em: Date.now() }));
   }
 
-  /* ---------- Questionário ---------- */
-  function iniciarNovoTeste() {
-    respostasAtuais = {};
-    fichaEditandoId = null;
-    document.getElementById("nome-cara").value = "";
-    renderPerguntas();
-    atualizarProgresso();
+  /* ---------- Abertura ---------- */
+  function montarAbertura() {
+    document.getElementById("framing").textContent = FRAMING;
+    const anterior = carregar();
+    const btn = document.getElementById("btn-ver-anterior");
+    btn.style.display = anterior ? "block" : "none";
+  }
+
+  /* ---------- Início do teste ---------- */
+  function comecar() {
+    respostas = {};
+    indice = 0;
+    etapa = "mais";
+    renderCenario();
     irPara("tela-teste");
   }
 
-  function renderPerguntas() {
-    const container = document.getElementById("perguntas");
-    container.innerHTML = "";
-    FRASES.forEach((frase) => {
-      const dim = DIMENSOES[frase.dimensao];
-      const bloco = document.createElement("div");
-      bloco.className = "pergunta";
-      bloco.dataset.id = frase.id;
-      bloco.innerHTML = `
-        <div class="pergunta-dim">${dim.emoji} ${dim.rotulo}</div>
-        <div class="pergunta-texto">${frase.texto}</div>
-        <div class="opcoes">
-          ${ESCALA.map((op) => `<button class="opcao" data-valor="${op.valor}">${op.texto}</button>`).join("")}
-        </div>
-      `;
-      bloco.querySelectorAll(".opcao").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          bloco.querySelectorAll(".opcao").forEach((b) => b.classList.remove("marcada"));
-          btn.classList.add("marcada");
-          respostasAtuais[frase.id] = Number(btn.dataset.valor);
-          atualizarProgresso();
-        });
+  /* ---------- Renderiza o cenário atual ---------- */
+  function renderCenario() {
+    const cenario = CENARIOS[indice];
+    const r = respostas[cenario.id] || {};
+
+    document.getElementById("passo-atual").textContent = `${indice + 1} de ${CENARIOS.length}`;
+    document.getElementById("progresso").style.width = `${(indice / CENARIOS.length) * 100}%`;
+
+    document.getElementById("cenario-titulo").textContent = cenario.titulo;
+    document.getElementById("cenario-situacao").textContent = cenario.situacao;
+
+    const instrucao = document.getElementById("instrucao");
+    instrucao.className = etapa === "mais" ? "instrucao instrucao-mais" : "instrucao instrucao-menos";
+    instrucao.innerHTML = etapa === "mais"
+      ? "Qual opção <strong>MAIS</strong> se parece com o que você faria?"
+      : "E qual <strong>MENOS</strong> se parece com você?";
+
+    const lista = document.getElementById("opcoes");
+    lista.innerHTML = "";
+
+    cenario.opcoes.forEach((op) => {
+      const chave = op.neutra ? "__neutra" : op.arq;
+      const btn = document.createElement("button");
+      btn.className = "opcao";
+      btn.textContent = op.texto;
+
+      // Marca visualmente o que já foi escolhido.
+      if (r.mais === chave) btn.classList.add("escolhida-mais");
+      if (r.menos === chave) btn.classList.add("escolhida-menos");
+
+      // Na etapa "menos", a opção já marcada como "mais" fica bloqueada.
+      const bloqueada = etapa === "menos" && r.mais === chave;
+      if (bloqueada) btn.classList.add("bloqueada");
+
+      btn.addEventListener("click", () => {
+        if (bloqueada) return;
+        escolher(cenario.id, chave);
       });
-      container.appendChild(bloco);
+
+      lista.appendChild(btn);
     });
+
+    document.getElementById("btn-voltar-passo").style.visibility =
+      (indice === 0 && etapa === "mais") ? "hidden" : "visible";
   }
 
-  function atualizarProgresso() {
-    const total = FRASES.length;
-    const feitas = Object.keys(respostasAtuais).length;
-    document.getElementById("progresso").style.width = `${(feitas / total) * 100}%`;
-  }
-
-  function verResultado() {
-    const total = FRASES.length;
-    const feitas = Object.keys(respostasAtuais).length;
-    if (feitas < total) {
-      const faltam = total - feitas;
-      if (!confirm(`Faltam ${faltam} resposta(s). A leitura fica mais certeira com tudo respondido. Ver mesmo assim?`)) {
-        // Rola até a primeira pergunta sem resposta.
-        const pendente = FRASES.find((f) => respostasAtuais[f.id] === undefined);
-        if (pendente) document.querySelector(`.pergunta[data-id="${pendente.id}"]`)?.scrollIntoView({ behavior: "smooth", block: "center" });
-        return;
-      }
+  /* ---------- Registra a escolha e avança ---------- */
+  function escolher(idCenario, chave) {
+    const r = respostas[idCenario] || {};
+    if (etapa === "mais") {
+      r.mais = chave;
+      if (r.menos === chave) delete r.menos; // não pode ser as duas coisas
+      respostas[idCenario] = r;
+      etapa = "menos";
+      renderCenario();
+    } else {
+      r.menos = chave;
+      respostas[idCenario] = r;
+      avancar();
     }
-
-    const nome = document.getElementById("nome-cara").value.trim();
-    const resultado = calcular(respostasAtuais);
-
-    // Salva/atualiza a ficha.
-    const fichas = carregarFichas();
-    const registro = {
-      id: fichaEditandoId || gerarId(),
-      nome,
-      resultado,
-      respostas: respostasAtuais,
-      criadoEm: Date.now(),
-    };
-    const idx = fichas.findIndex((f) => f.id === registro.id);
-    if (idx >= 0) fichas[idx] = registro; else fichas.push(registro);
-    salvarFichas(fichas);
-
-    mostrarResultado(resultado, nome);
   }
 
-  /* ---------- Tela de resultado ---------- */
-  function mostrarResultado(r, nome) {
-    const c = document.getElementById("resultado-conteudo");
-    const arq = r.arquetipo;
+  function avancar() {
+    if (indice < CENARIOS.length - 1) {
+      indice++;
+      etapa = "mais";
+      renderCenario();
+    } else {
+      finalizar();
+    }
+  }
 
-    const dimsHtml = Object.keys(DIMENSOES).map((chave) => {
-      const nota = r.dim[chave];
-      if (nota === null) return "";
-      const d = DIMENSOES[chave];
-      const cor = nota >= 65 ? "var(--verde)" : nota >= 45 ? "var(--amarelo)" : "var(--vermelho)";
+  function voltarPasso() {
+    if (etapa === "menos") {
+      etapa = "mais";
+    } else if (indice > 0) {
+      indice--;
+      etapa = "menos";
+    }
+    renderCenario();
+  }
+
+  /* ---------- Resultado ---------- */
+  function finalizar() {
+    const resultado = calcular(respostas);
+    salvar(resultado);
+    mostrarResultado(resultado);
+  }
+
+  function mostrarResultado(res) {
+    const dom = ARQUETIPOS[res.dominante.chave];
+    const sec = res.secundario ? ARQUETIPOS[res.secundario.chave] : null;
+    const c = document.getElementById("resultado-conteudo");
+
+    // Barras de perfil — o formato "45% Salvadora | 30% Urgente" do cânone.
+    const barras = res.perfil.map((p) => {
+      const a = ARQUETIPOS[p.chave];
       return `
-        <div class="dim-linha">
-          <div class="dim-topo">
-            <span class="dim-nome">${d.emoji} ${d.rotulo}</span>
-            <span class="dim-valor" style="color:${cor}">${nota}</span>
+        <div class="perfil-linha">
+          <div class="perfil-topo">
+            <span>${a.emoji} ${a.nome}</span>
+            <strong style="color:${a.cor}">${p.pct}%</strong>
           </div>
-          <div class="dim-barra"><div class="dim-fill" style="width:${nota}%;background:${cor}"></div></div>
+          <div class="perfil-barra"><div class="perfil-fill" style="width:${p.pct}%;background:${a.cor}"></div></div>
         </div>`;
     }).join("");
 
-    const positivosHtml = r.positivos.length
-      ? `<div class="bloco"><h3>💚 Sinais a favor</h3><div class="tags">${r.positivos.map((t) => `<span class="tag tag-verde">${escapar(t)}</span>`).join("")}</div></div>`
-      : "";
+    // Combinação dominante + secundário (amplificador).
+    const combo = sec ? rotuloCombinacao(res.dominante.chave, res.secundario.chave) : null;
 
-    const alertasHtml = r.alertas.length
-      ? `<div class="bloco"><h3>🚩 Fique atenta a</h3><div class="tags">${r.alertas.map((t) => `<span class="tag tag-vermelha">${escapar(t)}</span>`).join("")}</div></div>`
-      : "";
+    const blocoSecundario = sec ? `
+      <div class="bloco">
+        <h3>Padrão que amplifica</h3>
+        <p class="destaque-sec"><span style="color:${sec.cor}">${sec.emoji} ${sec.nome}</span> — ${res.secundario.pct}%</p>
+        <p>${sec.nucleo} Ele não substitui o primeiro: <strong>modifica</strong> a forma como ele aparece.</p>
+        ${combo ? `<p class="combo">Na prática, essa combinação costuma aparecer como <strong>“${combo}”</strong>.</p>` : ""}
+      </div>` : "";
+
+    const blocoDifuso = res.difuso ? `
+      <div class="bloco bloco-aviso">
+        <h3>Perfil difuso</h3>
+        <p>Nenhum padrão se destacou com clareza nas suas respostas. Isso não é erro nem falta
+        de resultado — costuma acontecer quando você está em transição, ou quando responde
+        pensando em relações muito diferentes entre si. Vale refazer pensando em <em>uma</em>
+        relação específica.</p>
+      </div>` : "";
 
     c.innerHTML = `
-      <div class="res-cabecalho" style="background:linear-gradient(135deg, ${arq.cor}, ${sombrear(arq.cor)})">
-        <div class="res-emoji">${arq.emoji}</div>
-        <div class="res-arq-nome">${arq.nome}</div>
-        ${nome ? `<div class="res-nome-cara">sobre: ${escapar(nome)}</div>` : ""}
-        ${anelSVG(r.geral)}
-        <div class="res-faixa">${r.faixa.emoji} ${r.faixa.rotulo}</div>
-        <p class="res-resumo">${arq.resumo}</p>
+      <div class="res-cabecalho" style="background:linear-gradient(135deg, ${dom.cor}, ${escurecer(dom.cor)})">
+        <div class="res-emoji">${dom.emoji}</div>
+        <p class="res-rotulo">Seu padrão de entrada</p>
+        <div class="res-nome">${dom.nome}</div>
+        <div class="res-pct">${res.dominante.pct}%</div>
+        <p class="res-nucleo">${dom.nucleo}</p>
       </div>
 
-      <div class="conselho">💡 ${arq.conselho}</div>
+      <div class="bloco bloco-espelho">
+        <h3>A pergunta de espelho</h3>
+        <p class="espelho">“${dom.espelho}”</p>
+      </div>
 
-      <div class="bloco"><h3>📊 Leitura por dimensão</h3>${dimsHtml}</div>
-      ${positivosHtml}
-      ${alertasHtml}
+      <div class="bloco">
+        <h3>Como esse padrão tende a aparecer</h3>
+        <p><strong>No que você faz:</strong> ${dom.faz}</p>
+        <p><strong>Na sua narrativa interna:</strong> ${dom.pensa}</p>
+      </div>
+
+      <div class="bloco">
+        <h3>O que ele custa</h3>
+        <p>${dom.custo}</p>
+      </div>
+
+      <div class="bloco bloco-masculino">
+        <h3>Como um homem de valor lê isso</h3>
+        <p>${dom.visaoMasculina}</p>
+      </div>
+
+      <div class="bloco bloco-forca">
+        <h3>A força que não se perde</h3>
+        <p>Todo padrão nasce de uma força legítima que perdeu direção. A sua é:
+        <strong>${dom.forca}</strong> O trabalho não é destruir isso — é recalibrar.</p>
+      </div>
+
+      <div class="bloco bloco-direcionar">
+        <h3>A recalibração</h3>
+        <p>${dom.recalibracao}</p>
+      </div>
+
+      ${blocoSecundario}
+      ${blocoDifuso}
+
+      <div class="bloco">
+        <h3>Seu perfil completo</h3>
+        ${barras}
+        <p class="confianca">Nível de confiança desta leitura: <strong>${res.confianca}</strong></p>
+      </div>
 
       <div class="res-acoes">
-        <button class="btn btn-secundario btn-bloco" id="btn-compartilhar-res">🔗 Mandar pra uma amiga testar</button>
-        <button class="btn btn-primario btn-bloco" id="btn-voltar-inicio">Voltar ao início</button>
+        <button class="btn btn-secundario btn-bloco" id="btn-compartilhar-res">Compartilhar com uma amiga</button>
+        <button class="btn btn-primario btn-bloco" id="btn-refazer">Refazer o inventário</button>
       </div>
 
-      <p class="aviso-final">Isto é um espelho das suas observações, não um veredito. Quem decide é você. 💗</p>
+      <div class="disclaimer">
+        <p><strong>Importante.</strong> Este instrumento identifica padrões que você pode
+        reconhecer e transformar. Ele não é avaliação psicológica, não equivale a diagnóstico
+        e não substitui terapia — é complementar a ela.</p>
+        <p>Você não <em>é</em> um arquétipo. Você está vivendo um padrão. E padrão pode ser
+        decodificado, despertado e reposicionado.</p>
+      </div>
     `;
 
-    c.querySelector("#btn-voltar-inicio").addEventListener("click", () => { renderInicio(); irPara("tela-inicio"); });
-    c.querySelector("#btn-compartilhar-res").addEventListener("click", () => compartilhar(nome, arq));
+    c.querySelector("#btn-refazer").addEventListener("click", comecar);
+    c.querySelector("#btn-compartilhar-res").addEventListener("click", () => compartilhar(dom));
 
+    document.getElementById("progresso").style.width = "100%";
     irPara("tela-resultado");
   }
 
-  /* ---------- Anel de nota em SVG ---------- */
-  function anelSVG(nota) {
-    const raio = 46, circ = 2 * Math.PI * raio;
-    const preenchido = circ * (nota / 100);
-    return `
-      <svg class="res-nota-anel" width="120" height="120" viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r="${raio}" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="10"/>
-        <circle cx="60" cy="60" r="${raio}" fill="none" stroke="#fff" stroke-width="10"
-          stroke-linecap="round" stroke-dasharray="${preenchido} ${circ}"
-          transform="rotate(-90 60 60)"/>
-        <text x="60" y="58" text-anchor="middle" class="anel-num">${nota}</text>
-        <text x="60" y="76" text-anchor="middle" class="anel-txt">de 100</text>
-      </svg>`;
-  }
-
   /* ---------- Compartilhar ---------- */
-  function compartilhar(nome, arq) {
-    const texto = arq
-      ? `Fiz o teste "Registro de Possíveis" 💗 Deu "${arq.nome}" ${arq.emoji}. Faz o seu também:`
-      : `Achei esse teste "Registro de Possíveis" 💗 A gente registra o que o cara fala e vê os sinais. Bora testar?`;
+  function compartilhar(dom) {
+    const texto = dom
+      ? `Fiz o Inventário ATHENA e o meu padrão de entrada é ${dom.nome}. Faz o seu:`
+      : `Encontrei este inventário sobre padrões afetivos. Vale fazer:`;
     const url = location.href.split("#")[0];
     if (navigator.share) {
-      navigator.share({ title: "Registro de Possíveis", text: texto, url }).catch(() => {});
-    } else {
-      navigator.clipboard?.writeText(`${texto} ${url}`).then(
-        () => alert("Link copiado! É só colar pra sua amiga. 💗"),
+      navigator.share({ title: "Inventário ATHENA", text: texto, url }).catch(() => {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(`${texto} ${url}`).then(
+        () => alert("Link copiado."),
         () => prompt("Copie o link:", url)
       );
+    } else {
+      prompt("Copie o link:", url);
     }
   }
 
   /* ---------- Utilidades ---------- */
-  function gerarId() { return "f" + Math.floor(performance.now() * 1000) + "" + carregarFichas().length; }
-  function escapar(s) { const d = document.createElement("div"); d.textContent = s; return d.innerHTML; }
-  function sombrear(hex) {
-    // Escurece uma cor hex ~18% pra fazer o degradê do cabeçalho.
+  function escurecer(hex) {
     const n = parseInt(hex.slice(1), 16);
-    const r = Math.max(0, ((n >> 16) & 255) - 40);
-    const g = Math.max(0, ((n >> 8) & 255) - 40);
-    const b = Math.max(0, (n & 255) - 40);
+    const r = Math.max(0, ((n >> 16) & 255) - 45);
+    const g = Math.max(0, ((n >> 8) & 255) - 45);
+    const b = Math.max(0, (n & 255) - 45);
     return `rgb(${r},${g},${b})`;
   }
 
-  /* ---------- Ligações de botões ---------- */
-  document.getElementById("btn-nova").addEventListener("click", iniciarNovoTeste);
-  document.getElementById("btn-ver-resultado").addEventListener("click", verResultado);
-  document.getElementById("btn-compartilhar").addEventListener("click", () => compartilhar(null, null));
+  /* ---------- Ligações ---------- */
+  document.getElementById("btn-comecar").addEventListener("click", comecar);
+  document.getElementById("btn-voltar-passo").addEventListener("click", voltarPasso);
   document.getElementById("btn-sobre").addEventListener("click", () => irPara("tela-sobre"));
-  document.querySelectorAll("[data-voltar]").forEach((b) =>
-    b.addEventListener("click", () => { renderInicio(); irPara("tela-inicio"); })
+  document.getElementById("btn-ver-anterior").addEventListener("click", () => {
+    const a = carregar();
+    if (a && a.resultado) mostrarResultado(a.resultado);
+  });
+  document.querySelectorAll("[data-inicio]").forEach((b) =>
+    b.addEventListener("click", () => { montarAbertura(); irPara("tela-inicio"); })
   );
 
-  /* ---------- Início ---------- */
-  renderInicio();
+  montarAbertura();
 })();

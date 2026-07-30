@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#b5477f" />
-  <title>Registro de Possíveis</title>
-  <meta name="description" content="Um teste leve e psicométrico pra ajudar mulheres a lerem os sinais antes de se envolverem." />
+  <meta name="theme-color" content="#1c1a2e" />
+  <title>Inventário ATHENA</title>
+  <meta name="description" content="Reconheça o padrão que você repete no amor. Um inventário de autoconhecimento do método ATHENA PRIME." />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="icons/icon.svg" />
@@ -13,89 +13,109 @@
 </head>
 <body>
   <div id="app">
-    <!-- ================= TELA: INÍCIO / LISTA DE FICHAS ================= -->
+    <!-- ================= ABERTURA ================= -->
     <section id="tela-inicio" class="tela ativa">
-      <header class="topo">
+      <main class="conteudo conteudo-abertura">
         <div class="marca">
-          <span class="marca-emoji">💗</span>
-          <div>
-            <h1>Registro de Possíveis</h1>
-            <p class="subtitulo">Leia os sinais antes de se envolver</p>
-          </div>
+          <div class="marca-selo">Α</div>
+          <p class="marca-nome">INVENTÁRIO ATHENA</p>
         </div>
-      </header>
 
-      <main class="conteudo">
-        <button class="btn btn-primario btn-bloco" id="btn-nova">＋ Nova avaliação</button>
+        <h1 class="titulo-abertura">Qual padrão você repete no amor?</h1>
 
-        <div id="lista-fichas" class="lista-fichas"></div>
+        <p class="lead">
+          Ela venceu no mundo, mas ainda se perde no amor. Não por falta de valor —
+          por um padrão que ainda não aprendeu a enxergar.
+        </p>
 
-        <div id="vazio" class="estado-vazio">
-          <div class="vazio-emoji">🫧</div>
-          <p><strong>Nenhuma ficha ainda.</strong></p>
-          <p class="fraco">Crie a primeira avaliação e comece a registrar o que ele fala e faz.</p>
-        </div>
+        <p class="lead">
+          Este inventário identifica qual dos <strong>6 padrões de sabotagem afetiva</strong>
+          está ativo em você agora. São 6 situações reais. Leva cerca de 4 minutos.
+        </p>
+
+        <blockquote class="framing" id="framing"></blockquote>
+
+        <button class="btn btn-primario btn-bloco" id="btn-comecar">Começar o inventário</button>
+        <button class="btn btn-fantasma btn-bloco" id="btn-ver-anterior">Ver meu último resultado</button>
+
+        <button class="link" id="btn-sobre">Como isto funciona</button>
       </main>
-
-      <footer class="rodape">
-        <button class="link" id="btn-compartilhar">🔗 Compartilhar o app com uma amiga</button>
-        <button class="link" id="btn-sobre">Sobre &amp; como funciona</button>
-      </footer>
     </section>
 
-    <!-- ================= TELA: QUESTIONÁRIO ================= -->
+    <!-- ================= TESTE ================= -->
     <section id="tela-teste" class="tela">
-      <header class="topo topo-teste">
-        <button class="btn-voltar" data-voltar>‹</button>
-        <div class="barra-progresso"><div class="barra-progresso-fill" id="progresso"></div></div>
+      <header class="topo-teste">
+        <button class="btn-voltar" id="btn-voltar-passo" aria-label="Voltar">‹</button>
+        <div class="barra"><div class="barra-fill" id="progresso"></div></div>
+        <span class="passo" id="passo-atual"></span>
       </header>
 
       <main class="conteudo">
-        <div class="campo-nome">
-          <label for="nome-cara">Quem é ele? <span class="fraco">(apelido serve)</span></label>
-          <input type="text" id="nome-cara" placeholder="Ex: Rapaz do app 🙂" autocomplete="off" />
+        <div class="cenario">
+          <p class="cenario-titulo" id="cenario-titulo"></p>
+          <p class="cenario-situacao" id="cenario-situacao"></p>
         </div>
 
-        <p class="dica-teste">Responda pensando no que ele <strong>falou</strong> e <strong>fez</strong> — sem romantizar, só o que aconteceu de verdade.</p>
+        <p class="instrucao" id="instrucao"></p>
 
-        <div id="perguntas"></div>
-
-        <button class="btn btn-primario btn-bloco" id="btn-ver-resultado">Ver leitura ✨</button>
+        <div id="opcoes" class="opcoes"></div>
       </main>
     </section>
 
-    <!-- ================= TELA: RESULTADO ================= -->
+    <!-- ================= RESULTADO ================= -->
     <section id="tela-resultado" class="tela">
-      <header class="topo topo-teste">
-        <button class="btn-voltar" data-voltar>‹</button>
-        <span class="topo-titulo">Leitura</span>
+      <header class="topo-teste">
+        <button class="btn-voltar" data-inicio aria-label="Início">‹</button>
+        <span class="topo-titulo">Sua leitura</span>
       </header>
       <main class="conteudo" id="resultado-conteudo"></main>
     </section>
 
-    <!-- ================= TELA: SOBRE ================= -->
+    <!-- ================= SOBRE ================= -->
     <section id="tela-sobre" class="tela">
-      <header class="topo topo-teste">
-        <button class="btn-voltar" data-voltar>‹</button>
-        <span class="topo-titulo">Sobre</span>
+      <header class="topo-teste">
+        <button class="btn-voltar" data-inicio aria-label="Início">‹</button>
+        <span class="topo-titulo">Como isto funciona</span>
       </header>
       <main class="conteudo texto-longo">
-        <h2>O que é isso?</h2>
-        <p>Um teste leve pra te ajudar a <strong>parar e enxergar os sinais</strong> antes de se envolver. Você registra o que ele falou e fez, e o app organiza isso numa leitura com pontuação e um arquétipo.</p>
-        <h2>Não é uma IA que “adivinha” o cara</h2>
-        <p>É um modelo <strong>psicométrico</strong>: as respostas são pontuadas segundo critérios definidos por nós. É transparente e não inventa nada. A leitura é um <em>espelho organizado</em> das suas próprias observações — quem decide é sempre você.</p>
-        <h2>Seus dados são seus</h2>
-        <p>Tudo fica salvo <strong>só no seu celular</strong>. Nada é enviado pra internet.</p>
-        <h2>Importante</h2>
-        <p class="fraco">Isto é uma ferramenta de autoconhecimento e diversão, não um laudo psicológico nem aconselhamento profissional. Confie sempre na sua intuição e busque apoio de verdade se sentir que precisa.</p>
+        <h2>O que este inventário faz</h2>
+        <p>Ele organiza padrões recorrentes de comportamento, pensamento, emoção e escolha
+        afetiva em uma linguagem clara e aplicável. O objetivo não é te rotular — é substituir
+        confusão por clareza.</p>
+
+        <h2>Por que ele pede duas escolhas</h2>
+        <p>Em cada situação você indica o que <strong>mais</strong> e o que <strong>menos</strong>
+        se parece com você. Esse formato força uma priorização real entre opções que soam todas
+        defensáveis — e é justamente isso que reduz a tentação de responder o que “soa melhor”.</p>
+
+        <h2>Você não é o arquétipo</h2>
+        <p>Os padrões não são rótulos permanentes. São espelhos de padrões ativados. Você pode
+        manifestar um ou mais em momentos diferentes da vida — e, ao reconhecê-los, começa a
+        reposicioná-los.</p>
+        <p class="citacao">“Você não é o arquétipo. Você está vivendo um padrão. E padrão pode
+        ser decodificado, despertado e reposicionado.”</p>
+
+        <h2>Toda força tem uma origem legítima</h2>
+        <p>Cada padrão nasce de uma força real que perdeu direção, limite ou regulação. O
+        trabalho não é destruir essa força. É recalibrá-la.</p>
+
+        <h2>Seus dados</h2>
+        <p>Suas respostas ficam salvas apenas no seu aparelho. Nada é enviado para a internet.</p>
+
+        <h2>Limites</h2>
+        <p>Este instrumento identifica padrões que você pode reconhecer e transformar. Ele não é
+        avaliação psicológica, não equivale a diagnóstico médico ou psicológico e não substitui
+        terapia — é complementar a ela, quando necessário.</p>
+        <p class="fraco">Se algo que você está vivendo pede suporte especializado, considere
+        consultar um(a) psicólogo(a). O site do CFP (cfp.org.br) permite localizar profissionais
+        por região.</p>
       </main>
     </section>
   </div>
 
-  <script src="js/model.js"></script>
+  <script src="js/inventario.js"></script>
   <script src="js/app.js"></script>
   <script>
-    // Registra o service worker (dá o "instalar na tela" e o funcionamento offline).
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
     }

@@ -1,113 +1,114 @@
-# 💗 Registro de Possíveis
+# Inventário ATHENA
 
-Um **web app** (PWA) leve e psicométrico que ajuda mulheres solteiras a
-**lerem os sinais** de um homem antes de se envolverem. Ela registra o que ele
-**falou e fez**, e o app devolve uma leitura com **pontuação, arquétipo e
-alertas** — num tom leve e fácil de mandar pra uma amiga: *"olha esse aqui, vamos testar?"*
+**Teste de Perfil — Mulheres Solteiras.** Um web app (PWA) que ajuda a mulher a reconhecer
+**qual padrão ela repete no amor**, a partir dos 6 Arquétipos de Sabotagem Afetiva do método
+ATHENA PRIME.
 
-> **Sem IA que "adivinha" o cara.** O cérebro é um **modelo psicométrico**
-> transparente (no espírito dos arquétipos), definido e calibrado por você. É um
-> espelho organizado das observações da própria mulher — quem decide é ela.
+É o **instrumento de entrada** previsto no Código-Fonte do método:
 
----
-
-## 📱 Como testar no seu celular (2 minutos)
-
-O app é só um site que vira app. Pra ver funcionando:
-
-1. **No computador**, dentro desta pasta, rode um servidorzinho local:
-   ```
-   python3 -m http.server 8099
-   ```
-2. No navegador do **computador**, abra: `http://localhost:8099`
-3. Pra abrir no **celular** (no mesmo Wi-Fi), descubra o IP do computador e
-   acesse `http://SEU_IP:8099` no navegador do celular.
-
-Não quer mexer com isso? Veja a seção **"Publicar de graça"** abaixo — é ainda
-mais fácil.
+> **Teste / Quiz de Arquétipos** — Futuro instrumento de entrada, consciência e devolutiva
+> psicoeducacional.
 
 ---
 
-## 🚀 Publicar de graça (sem loja, sem taxa anual)
+## O que ele faz
 
-Você **não precisa** da Apple Store nem da Play Store pra começar. O jeito mais
-rápido e barato:
+Seis situações reais. Em cada uma, ela escolhe o que **mais** e o que **menos** se parece com
+ela. No fim, recebe uma leitura com o padrão dominante, o padrão que amplifica, o custo, a
+visão masculina madura, a força a preservar e a recalibração.
 
-### Opção 1 — Netlify Drop (o mais fácil, arrasta e solta)
-1. Acesse **app.netlify.com/drop**
-2. **Arraste esta pasta inteira** pra dentro da página.
-3. Pronto: você recebe um link tipo `https://seu-app.netlify.app`. É esse link
-   que a mulher abre no celular e "instala" na tela inicial.
+**A regra que governa tudo:** os arquétipos descrevem o padrão **dela**, nunca um rótulo do
+homem. A devolutiva sempre fala em *"você tende a…"*, jamais *"você é…"*.
 
-### Opção 2 — GitHub Pages (gratuito, já que o projeto está no GitHub)
-1. No repositório, vá em **Settings → Pages**.
-2. Em "Source", escolha a branch e a pasta **/ (root)**. Salve.
-3. Em ~1 minuto o app fica no ar num link `https://...github.io/...`.
-
-Depois de publicado, no celular:
-- **iPhone (Safari):** botão Compartilhar → "Adicionar à Tela de Início".
-- **Android (Chrome):** menu ⋮ → "Instalar app" / "Adicionar à tela inicial".
-
-O ícone 💗 aparece na tela como um app normal e abre até **sem internet**.
+> "Você não é o arquétipo. Você está vivendo um padrão. E padrão pode ser decodificado,
+> despertado e reposicionado."
 
 ---
 
-## 💰 Cobrar a "taxinha barata"
+## Por que o formato é assim (e não um quiz comum)
 
-Como é um link, é fácil colocar um **pagamento na frente** dele:
-- **Hotmart / Kiwify / Eduzz** (Brasil): você vende o "acesso" e entrega o link.
-- **Stripe / Mercado Pago**: link de pagamento ou assinatura mensal baixa.
+O teste usa **FHT — Forçado Hierárquico de Tipicidade**: ela precisa escolher a opção mais
+parecida **e** a menos parecida. Isso força priorização entre alternativas que soam todas
+defensáveis.
 
-O modelo ideal pro seu caso é **assinatura baixinha** (ex.: alguns reais/mês) ou
-**pagamento único** de acesso vitalício.
+A razão é técnica e está no cânone: este avatar tem alta capacidade de autoapresentação
+positiva. Itens literais que soem como fraqueza disparam *faking good* e **colapsam a
+fidedignidade da escala**. O formato FHT e a reformulação do déficit como "excesso de uma
+virtude mal-gerenciada" existem exatamente para evitar isso.
 
----
-
-## 🎛️ Como CALIBRAR o teste (você não precisa saber programar)
-
-Todo o "cérebro" está em **`js/model.js`**, com instruções em português no topo
-do arquivo. Lá você pode, sem medo:
-- **Trocar o texto** de qualquer frase.
-- **Adicionar/remover** frases (é só copiar um bloco `{ ... }`).
-- Ajustar **pesos** (o quanto cada frase importa).
-- Editar os **arquétipos** (nomes, emojis, cores, resumos e conselhos).
-- Mudar as **faixas** de pontuação (verde / amarelo / vermelho).
-
-Cada campo tem um comentário explicando o que faz. Se editar os arquivos,
-lembre de trocar a versão no `sw.js` (`v1` → `v2`) pra atualizar quem já usou.
+**Pontuação:** mais parecida `+2` · menos parecida `−1` · resultado apresentado como perfil
+percentual (`45% Salvadora | 30% Urgente | 25% Carente`).
 
 ---
 
-## 🗂️ O que tem em cada arquivo
+## Como testar no celular
 
-| Arquivo | Para que serve |
+```
+python3 -m http.server 8099
+```
+
+Depois abra `http://localhost:8099` no computador, ou `http://SEU_IP:8099` no celular (mesmo
+Wi-Fi).
+
+## Como publicar (grátis, sem loja)
+
+**Netlify Drop** — acesse `app.netlify.com/drop` e arraste esta pasta. Você recebe um link na
+hora. **GitHub Pages** — Settings → Pages → escolha a branch e a pasta `/ (root)`.
+
+No celular: iPhone (Safari) → Compartilhar → "Adicionar à Tela de Início". Android (Chrome) →
+menu ⋮ → "Instalar app". O ícone fica na tela e o app abre até sem internet.
+
+---
+
+## Como calibrar (sem saber programar)
+
+Tudo está em **`js/inventario.js`**, comentado em português.
+
+| O que você quer mudar | Onde mexer |
 |---|---|
-| `index.html` | As telas do app |
-| `css/styles.css` | O visual (cores no topo, fáceis de trocar) |
-| `js/model.js` | **O modelo psicométrico** — perguntas e arquétipos (calibre aqui) |
-| `js/app.js` | A lógica (navegação, salvar fichas, resultado) |
-| `manifest.webmanifest` + `sw.js` + `icons/` | O que faz virar "app instalável" e offline |
+| Texto de um cenário | campo `situacao` |
+| Uma das respostas | campo `texto` dentro de `opcoes` |
+| Descrição de um arquétipo | bloco `ARQUETIPOS` (7 campos por arquétipo) |
+| Adicionar um cenário | copie um bloco `{ ... }` inteiro e troque o `id` |
+
+Ao editar, troque a versão no `sw.js` (`v1` → `v2`) para atualizar quem já usou o app.
+
+**Os cenários 1 a 6 são verbatim** do Estudo Metodológico Fundacional. Alterá-los muda o
+instrumento — vale conferir com o Danniel antes.
 
 ---
 
-## 🔒 Privacidade
+## O cânone
 
-Tudo é salvo **só no aparelho da usuária** (localStorage do navegador). Nada é
-enviado pra internet. Isso é importante num app com um tema sensível como esse.
+O método está documentado em `docs/`, extraído dos documentos-fonte do Drive:
 
----
+- **`docs/CANONE_ATHENA.md`** — os 6 arquétipos em detalhe, Lei ATHENA, Tríade D, Soberania
+  Afetiva, léxico permitido/proibido, posicionamento, ética.
+- **`docs/CANONE_INVENTARIO.md`** — o avatar, a arquitetura completa do inventário (35 itens,
+  7 áreas, 4 camadas), os 6 cenários, formato do relatório, disclaimers.
 
-## 🧭 Próximos passos (ideias)
-
-- **Ebook** como complemento (o mesmo conteúdo/conceitos em texto).
-- Camada de **IA opcional** pra interpretar anotações em texto livre e sugerir
-  em qual critério encaixa (mantendo o modelo psicométrico como base confiável).
-- **Histórico e comparação** entre vários "possíveis".
-- Empacotar como **app nativo** (via Capacitor) pras lojas, se o projeto crescer.
+Ambos registram os **conflitos e lacunas** encontrados no material original em vez de
+disfarçá-los. Vale ler a seção de alertas antes de evoluir o produto.
 
 ---
 
-### ⚠️ Aviso
-Ferramenta de autoconhecimento e entretenimento — **não** é laudo psicológico
-nem aconselhamento profissional. A intuição da usuária vem sempre em primeiro
-lugar.
+## O que ainda falta
+
+1. **Os 35 itens finais** — hoje o app usa 6 cenários (Camada 1). Faltam as Camadas 2, 3 e 4.
+2. **Os valores de corte** — se perderam na conversão do .docx; os atuais são provisórios.
+3. **Calibração empírica** — o cânone pede N≥50 para os cortes e N≥100 para a ponderação.
+4. **Os 50 green/red flags** do Checklist ATHENA — nunca foram escritos. São o outro app
+   possível (leitura do homem), separado deste.
+
+---
+
+## Privacidade
+
+As respostas ficam salvas **apenas no aparelho** (localStorage). Nada é enviado para a
+internet.
+
+## Limites
+
+Este instrumento identifica padrões que a pessoa pode reconhecer e transformar. **Não é
+avaliação psicológica, não equivale a diagnóstico e não substitui terapia** — é complementar
+a ela. O app inclui o texto de encaminhamento profissional previsto no método.

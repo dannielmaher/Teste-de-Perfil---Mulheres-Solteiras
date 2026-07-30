@@ -1,12 +1,12 @@
 /* Service Worker — faz o app abrir offline e ser "instalável" na tela do celular.
    Se você editar os arquivos, troque o número da versão (v1 -> v2) para forçar
    a atualização nos celulares que já usaram o app. */
-const CACHE = "registro-possiveis-v1";
+const CACHE = "inventario-athena-v1";
 const ARQUIVOS = [
   "./",
   "./index.html",
   "./css/styles.css",
-  "./js/model.js",
+  "./js/inventario.js",
   "./js/app.js",
   "./manifest.webmanifest",
   "./icons/icon.svg",
