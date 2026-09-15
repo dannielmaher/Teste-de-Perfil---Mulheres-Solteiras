@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1c1a2e" />
+  <title>Inventário ATHENA</title>
+  <meta name="description" content="Reconheça o padrão que você repete no amor. Um inventário de autoconhecimento do método ATHENA PRIME." />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- ================= ABERTURA ================= -->
+    <section id="tela-inicio" class="tela ativa">
+      <main class="conteudo conteudo-abertura">
+        <div class="marca">
+          <div class="marca-selo">Α</div>
+          <p class="marca-nome">INVENTÁRIO ATHENA</p>
+        </div>
+
+        <h1 class="titulo-abertura">Qual padrão você repete no amor?</h1>
+
+        <p class="lead">
+          Ela venceu no mundo, mas ainda se perde no amor. Não por falta de valor —
+          por um padrão que ainda não aprendeu a enxergar.
+        </p>
+
+        <p class="lead">
+          Este inventário identifica qual dos <strong>6 padrões de sabotagem afetiva</strong>
+          está ativo em você agora. São 6 situações reais. Leva cerca de 4 minutos.
+        </p>
+
+        <blockquote class="framing" id="framing"></blockquote>
+
+        <button class="btn btn-primario btn-bloco" id="btn-comecar">Começar o inventário</button>
+        <button class="btn btn-fantasma btn-bloco" id="btn-ver-anterior">Ver meu último resultado</button>
+
+        <button class="link" id="btn-sobre">Como isto funciona</button>
+      </main>
+    </section>
+
+    <!-- ================= TESTE ================= -->
+    <section id="tela-teste" class="tela">
+      <header class="topo-teste">
+        <button class="btn-voltar" id="btn-voltar-passo" aria-label="Voltar">‹</button>
+        <div class="barra"><div class="barra-fill" id="progresso"></div></div>
+        <span class="passo" id="passo-atual"></span>
+      </header>
+
+      <main class="conteudo">
+        <div class="cenario">
+          <p class="cenario-titulo" id="cenario-titulo"></p>
+          <p class="cenario-situacao" id="cenario-situacao"></p>
+        </div>
+
+        <p class="instrucao" id="instrucao"></p>
+
+        <div id="opcoes" class="opcoes"></div>
+      </main>
+    </section>
+
+    <!-- ================= RESULTADO ================= -->
+    <section id="tela-resultado" class="tela">
+      <header class="topo-teste">
+        <button class="btn-voltar" data-inicio aria-label="Início">‹</button>
+        <span class="topo-titulo">Sua leitura</span>
+      </header>
+      <main class="conteudo" id="resultado-conteudo"></main>
+    </section>
+
+    <!-- ================= SOBRE ================= -->
+    <section id="tela-sobre" class="tela">
+      <header class="topo-teste">
+        <button class="btn-voltar" data-inicio aria-label="Início">‹</button>
+        <span class="topo-titulo">Como isto funciona</span>
+      </header>
+      <main class="conteudo texto-longo">
+        <h2>O que este inventário faz</h2>
+        <p>Ele organiza padrões recorrentes de comportamento, pensamento, emoção e escolha
+        afetiva em uma linguagem clara e aplicável. O objetivo não é te rotular — é substituir
+        confusão por clareza.</p>
+
+        <h2>Por que ele pede duas escolhas</h2>
+        <p>Em cada situação você indica o que <strong>mais</strong> e o que <strong>menos</strong>
+        se parece com você. Esse formato força uma priorização real entre opções que soam todas
+        defensáveis — e é justamente isso que reduz a tentação de responder o que “soa melhor”.</p>
+
+        <h2>Você não é o arquétipo</h2>
+        <p>Os padrões não são rótulos permanentes. São espelhos de padrões ativados. Você pode
+        manifestar um ou mais em momentos diferentes da vida — e, ao reconhecê-los, começa a
+        reposicioná-los.</p>
+        <p class="citacao">“Você não é o arquétipo. Você está vivendo um padrão. E padrão pode
+        ser decodificado, despertado e reposicionado.”</p>
+
+        <h2>Toda força tem uma origem legítima</h2>
+        <p>Cada padrão nasce de uma força real que perdeu direção, limite ou regulação. O
+        trabalho não é destruir essa força. É recalibrá-la.</p>
+
+        <h2>Seus dados</h2>
+        <p>Suas respostas ficam salvas apenas no seu aparelho. Nada é enviado para a internet.</p>
+
+        <h2>Limites</h2>
+        <p>Este instrumento identifica padrões que você pode reconhecer e transformar. Ele não é
+        avaliação psicológica, não equivale a diagnóstico médico ou psicológico e não substitui
+        terapia — é complementar a ela, quando necessário.</p>
+        <p class="fraco">Se algo que você está vivendo pede suporte especializado, considere
+        consultar um(a) psicólogo(a). O site do CFP (cfp.org.br) permite localizar profissionais
+        por região.</p>
+      </main>
+    </section>
+  </div>
+
+  <script src="js/inventario.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+    }
+  </script>
+</body>
+</html>

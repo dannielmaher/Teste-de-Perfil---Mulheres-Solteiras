@@ -1,0 +1,16 @@
+{
+  "name": "Inventário ATHENA",
+  "short_name": "ATHENA",
+  "description": "Reconheça o padrão que você repete no amor. Instrumento de autoconhecimento do método ATHENA PRIME.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#14131f",
+  "theme_color": "#14131f",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,220 @@
+/* =============================================================================
+ *  INVENTÁRIO ATHENA — visual
+ *
+ *  Registro: adulto, sóbrio, premium. O avatar rejeita vulgaridade,
+ *  infantilização e "promessas mágicas" — então: tinta profunda, um dourado
+ *  contido, tipografia com serifa nos títulos, respiro generoso.
+ *  As cores estão todas no bloco :root, fáceis de trocar.
+ * ========================================================================== */
+
+:root {
+  --tinta:        #14131f;
+  --tinta-clara:  #1e1c2e;
+  --superficie:   #252336;
+  --borda:        #35324a;
+  --texto:        #efeef5;
+  --texto-medio:  #b3afc4;
+  --texto-fraco:  #837e99;
+  --ouro:         #c9a227;
+  --ouro-claro:   #e3c765;
+  --vinho:        #7d2d4a;
+  --raio:         14px;
+  --raio-g:       20px;
+  --serif:        Georgia, "Times New Roman", serif;
+  --sans:         -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+
+body {
+  font-family: var(--sans);
+  background: var(--tinta);
+  color: var(--texto);
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app { max-width: 600px; margin: 0 auto; min-height: 100%; }
+
+.tela { display: none; flex-direction: column; min-height: 100vh; min-height: 100dvh; }
+.tela.ativa { display: flex; }
+
+.conteudo { flex: 1; padding: 20px 22px calc(env(safe-area-inset-bottom) + 40px); }
+.conteudo-abertura { display: flex; flex-direction: column; justify-content: center; padding-top: calc(env(safe-area-inset-top) + 48px); }
+
+/* ---------- Marca ---------- */
+.marca { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+.marca-selo {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--ouro); color: var(--ouro);
+  display: grid; place-items: center;
+  font-family: var(--serif); font-size: 21px; flex-shrink: 0;
+}
+.marca-nome { font-size: 11.5px; letter-spacing: 2.4px; color: var(--ouro); font-weight: 600; }
+
+/* ---------- Abertura ---------- */
+.titulo-abertura {
+  font-family: var(--serif); font-weight: 400;
+  font-size: clamp(29px, 8vw, 38px); line-height: 1.22;
+  letter-spacing: -0.4px; margin-bottom: 22px;
+}
+.lead { color: var(--texto-medio); font-size: 16px; margin-bottom: 16px; }
+.lead strong { color: var(--texto); font-weight: 600; }
+
+.framing {
+  border-left: 2px solid var(--ouro);
+  padding: 4px 0 4px 16px; margin: 26px 0 30px;
+  font-family: var(--serif); font-style: italic;
+  color: var(--texto-medio); font-size: 15px; line-height: 1.6;
+}
+
+/* ---------- Botões ---------- */
+.btn {
+  border: none; border-radius: 999px; cursor: pointer;
+  font-size: 16px; font-weight: 600; font-family: var(--sans);
+  transition: transform .08s ease, opacity .2s ease;
+}
+.btn:active { transform: scale(0.985); }
+.btn-bloco { display: block; width: 100%; padding: 17px; margin-bottom: 11px; }
+.btn-primario { background: var(--ouro); color: #221d05; }
+.btn-secundario { background: transparent; color: var(--texto); border: 1px solid var(--borda); }
+.btn-fantasma { background: transparent; color: var(--texto-medio); border: 1px solid var(--borda); }
+
+.link {
+  background: none; border: none; color: var(--texto-fraco);
+  font-size: 14px; cursor: pointer; padding: 12px; width: 100%;
+  font-family: var(--sans); text-decoration: underline; text-underline-offset: 3px;
+}
+
+/* ---------- Topo do teste ---------- */
+.topo-teste {
+  display: flex; align-items: center; gap: 14px;
+  padding: calc(env(safe-area-inset-top) + 18px) 22px 14px;
+}
+.btn-voltar {
+  background: none; border: 1px solid var(--borda); color: var(--texto-medio);
+  width: 36px; height: 36px; border-radius: 50%; font-size: 22px;
+  line-height: 1; cursor: pointer; flex-shrink: 0;
+}
+.topo-titulo { font-family: var(--serif); font-size: 17px; color: var(--texto-medio); }
+.passo { font-size: 12.5px; color: var(--texto-fraco); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+.barra { flex: 1; height: 3px; background: var(--borda); border-radius: 999px; overflow: hidden; }
+.barra-fill { height: 100%; width: 0; background: var(--ouro); border-radius: 999px; transition: width .35s ease; }
+
+/* ---------- Cenário ---------- */
+.cenario {
+  background: var(--tinta-clara); border: 1px solid var(--borda);
+  border-radius: var(--raio-g); padding: 22px; margin-bottom: 24px;
+}
+.cenario-titulo {
+  font-size: 11px; letter-spacing: 1.9px; text-transform: uppercase;
+  color: var(--ouro); margin-bottom: 12px; font-weight: 600;
+}
+.cenario-situacao { font-family: var(--serif); font-size: 18.5px; line-height: 1.5; }
+
+.instrucao { font-size: 14.5px; margin-bottom: 16px; padding-left: 2px; color: var(--texto-medio); }
+.instrucao-mais strong { color: var(--ouro-claro); }
+.instrucao-menos strong { color: #d98a8a; }
+
+/* ---------- Opções ---------- */
+.opcoes { display: flex; flex-direction: column; gap: 10px; }
+.opcao {
+  width: 100%; text-align: left; cursor: pointer;
+  background: var(--superficie); border: 1px solid var(--borda);
+  border-radius: var(--raio); padding: 16px 18px;
+  color: var(--texto); font-size: 15.5px; line-height: 1.5;
+  font-family: var(--sans); transition: border-color .15s ease, background .15s ease;
+}
+.opcao:active { transform: scale(0.99); }
+.opcao.escolhida-mais { border-color: var(--ouro); background: rgba(201,162,39,.12); }
+.opcao.escolhida-menos { border-color: #a35b5b; background: rgba(163,91,91,.12); }
+.opcao.bloqueada { opacity: .38; cursor: not-allowed; }
+
+/* ---------- Resultado ---------- */
+.res-cabecalho {
+  border-radius: var(--raio-g); padding: 32px 24px; text-align: center; margin-bottom: 18px;
+}
+.res-emoji { font-size: 44px; line-height: 1; }
+.res-rotulo {
+  font-size: 10.5px; letter-spacing: 2.2px; text-transform: uppercase;
+  opacity: .82; margin-top: 14px;
+}
+.res-nome { font-family: var(--serif); font-size: 33px; line-height: 1.15; margin: 6px 0 4px; }
+.res-pct { font-size: 15px; opacity: .85; font-variant-numeric: tabular-nums; }
+.res-nucleo { font-size: 15.5px; margin-top: 14px; opacity: .95; }
+
+.bloco {
+  background: var(--tinta-clara); border: 1px solid var(--borda);
+  border-radius: var(--raio-g); padding: 20px 22px; margin-bottom: 13px;
+}
+.bloco h3 {
+  font-size: 10.5px; letter-spacing: 1.9px; text-transform: uppercase;
+  color: var(--ouro); margin-bottom: 12px; font-weight: 600;
+}
+.bloco p { font-size: 15.5px; color: var(--texto-medio); margin-bottom: 10px; }
+.bloco p:last-child { margin-bottom: 0; }
+.bloco p strong { color: var(--texto); font-weight: 600; }
+
+.bloco-espelho { background: transparent; border-color: var(--ouro); }
+.espelho { font-family: var(--serif); font-size: 21px; font-style: italic; color: var(--texto) !important; line-height: 1.45; }
+
+.bloco-masculino { border-left: 3px solid var(--vinho); }
+.bloco-forca { border-left: 3px solid #3f7d5a; }
+.bloco-direcionar { border-left: 3px solid var(--ouro); }
+.bloco-aviso { border-left: 3px solid var(--texto-fraco); }
+
+.destaque-sec { font-family: var(--serif); font-size: 20px; color: var(--texto) !important; }
+.combo { font-style: italic; }
+
+/* ---------- Perfil ---------- */
+.perfil-linha { margin-bottom: 13px; }
+.perfil-topo {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 14.5px; margin-bottom: 6px; color: var(--texto-medio);
+}
+.perfil-topo strong { font-variant-numeric: tabular-nums; }
+.perfil-barra { height: 6px; background: var(--borda); border-radius: 999px; overflow: hidden; }
+.perfil-fill { height: 100%; border-radius: 999px; transition: width .6s ease; }
+
+.confianca { font-size: 13.5px; color: var(--texto-fraco) !important; margin-top: 16px; }
+
+.res-acoes { margin-top: 22px; }
+
+.disclaimer {
+  margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--borda);
+}
+.disclaimer p { font-size: 13px; color: var(--texto-fraco); margin-bottom: 10px; }
+.disclaimer strong { color: var(--texto-medio); }
+
+/* ---------- Texto longo ---------- */
+.texto-longo h2 { font-family: var(--serif); font-weight: 400; font-size: 21px; margin: 26px 0 9px; }
+.texto-longo h2:first-child { margin-top: 8px; }
+.texto-longo p { color: var(--texto-medio); font-size: 15.5px; margin-bottom: 11px; }
+.texto-longo strong { color: var(--texto); }
+.citacao {
+  font-family: var(--serif); font-style: italic; font-size: 17px;
+  border-left: 2px solid var(--ouro); padding-left: 16px; margin: 16px 0;
+  color: var(--texto) !important;
+}
+.fraco { color: var(--texto-fraco) !important; font-size: 13.5px !important; }
+
+/* ---------- Claro (respeita quem usa tema claro) ---------- */
+@media (prefers-color-scheme: light) {
+  :root {
+    --tinta:       #f7f5f1;
+    --tinta-clara: #ffffff;
+    --superficie:  #ffffff;
+    --borda:       #e2ddd3;
+    --texto:       #1b1a25;
+    --texto-medio: #55505f;
+    --texto-fraco: #857f92;
+    --ouro:        #96751a;
+    --ouro-claro:  #7d6015;
+  }
+  .btn-primario { background: var(--ouro); color: #fff; }
+  .opcao.escolhida-mais { background: rgba(150,117,26,.10); }
+  .opcao.escolhida-menos { background: rgba(163,91,91,.10); }
+  .instrucao-menos strong { color: #a13a3a; }
+}
